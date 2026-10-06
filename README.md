@@ -18,7 +18,7 @@ xmake -y
 
 The LL mod packer places the mod in `bin/`. Copy the generated `vibrant-toggle` directory, including its DLL and generated `manifest.json`, into your LeviLamina client's `mods/` directory. Restart Minecraft. Do not copy the source manifest with `${...}` placeholders.
 
-The GitHub workflows build only the client variant. Before publishing with LIP, replace `YOUR_GITHUB_NAME` in `tooth.json` and publish this repository as `vibrant-toggle`.
+The GitHub workflows build only the client variant. The LIP metadata targets `JasminMunteanu/test`; release assets use the repository name `test`.
 
 ## Validation
 

@@ -1,7 +1,7 @@
 {
     "format_version":  3,
     "format_uuid":  "289f771f-2c9a-4d73-9f3f-8492495a924d",
-    "tooth":  "github.com/YOUR_GITHUB_NAME/vibrant-toggle",
+    "tooth":  "github.com/JasminMunteanu/test",
     "version":  "1.0.0",
     "info":  {
                  "name":  "Vibrant Toggle",
@@ -22,7 +22,7 @@
                                         {
                                             "type":  "zip",
                                             "urls":  [
-                                                         "https://{{tooth}}/releases/download/v{{version}}/vibrant-toggle-client-windows-x64.zip"
+                                                         "https://{{tooth}}/releases/download/v{{version}}/test-client-windows-x64.zip"
                                                      ],
                                             "placements":  [
                                                                {
