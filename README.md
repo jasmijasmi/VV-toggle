@@ -12,6 +12,8 @@ xmake repo -u
 xmake f -y -p windows -a x64 -m release --target_type=client
 xmake -y
 ```
+
+## Notes
 Unsupported devices/worlds/packs and ray-traced mode log a reason without changing graphics; disabling the mod stops the key from acting.
 
 
