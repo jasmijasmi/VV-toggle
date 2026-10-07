@@ -4,16 +4,49 @@
 
 #include "ll/api/mod/RegisterHelper.h"
 #include "ll/api/input/KeyRegistry.h"
+#include "ll/api/memory/Hook.h"
 #include "mc/client/gui/screens/UIScene.h"
 #include "mc/client/gui/screens/ScreenView.h"
 #include "mc/client/gui/screens/controllers/HudScreenController.h"
 #include "mc/client/gui/screens/interfaces/ISceneStack.h"
 #include "mc/client/gui/screens/models/MinecraftScreenModel.h"
 #include "mc/client/options/IOptionRegistry.h"
-#include "mc/locale/I18n.h"
+#include "mc/locale/I18nImpl.h"
 
 
 namespace my_mod {
+
+namespace {
+constexpr std::string_view LabelKey = "key.vibrant-toggle.toggle_vibrant_visuals_y";
+using PlainTranslation = std::string (I18nImpl::*)(
+    std::string const&, std::shared_ptr<Localization const> const
+);
+using FormattedTranslation = std::string (I18nImpl::*)(
+    std::string const&, std::vector<std::string> const&, std::shared_ptr<Localization const> const
+);
+
+LL_TYPE_INSTANCE_HOOK(
+    PlainLabelHook, ll::memory::HookPriority::Normal, I18nImpl,
+    static_cast<PlainTranslation>(&I18nImpl::$get), std::string,
+    std::string const& id, std::shared_ptr<Localization const> const locale
+) {
+    if (id == LabelKey) return "Vibrant Toggle";
+    return origin(id, locale);
+}
+
+LL_TYPE_INSTANCE_HOOK(
+    FormattedLabelHook, ll::memory::HookPriority::Normal, I18nImpl,
+    static_cast<FormattedTranslation>(&I18nImpl::$get), std::string,
+    std::string const& id, std::vector<std::string> const& params,
+    std::shared_ptr<Localization const> const locale
+) {
+    if (id == LabelKey) return "Vibrant Toggle";
+    return origin(id, params, locale);
+}
+
+using LabelHooks = ll::memory::HookRegistrar<PlainLabelHook, FormattedLabelHook>;
+std::unique_ptr<LabelHooks> labelHooks;
+} // namespace
 
 MyMod& MyMod::getInstance() {
     static MyMod instance;
@@ -44,11 +77,6 @@ bool MyMod::load() {
 
 bool MyMod::enable() {
     if (mEnabled) return true;
-    // Minecraft displays the action's translation key in keyboard settings.
-    // Preserve the action ID so existing user bindings remain intact.
-    getI18n().appendAdditionalTranslations(
-        {{"key.vibrant-toggle.toggle_vibrant_visuals_y", "Vibrant Toggle"}}, ""
-    );
     auto& key = ll::input::KeyRegistry::getInstance().getOrCreateKey(
         "toggle_vibrant_visuals_y", {'Y'}, true, ll::mod::NativeMod::current()
     );
@@ -56,6 +84,9 @@ bool MyMod::enable() {
         getSelf().getLogger().error("Restart Minecraft to re-enable Vibrant Toggle.");
         return false;
     }
+    // Resolve only this action's label at lookup time, including after language
+    // changes/resource reloads. Keep its ID so saved bindings are preserved.
+    labelHooks = std::make_unique<LabelHooks>();
     mEnabled = true;
     getSelf().getLogger().info("Press Y in game to toggle Vibrant Visuals.");
     return true;
@@ -63,6 +94,7 @@ bool MyMod::enable() {
 
 bool MyMod::disable() {
     mEnabled = false;
+    labelHooks.reset();
     // LL's KeyRegistry removes this mod's callbacks when it is disabled.
     return true;
 }
