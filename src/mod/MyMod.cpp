@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 #include "mod/MyMod.h"
 
 #include "ll/api/mod/RegisterHelper.h"
@@ -8,6 +10,7 @@
 #include "mc/client/gui/screens/interfaces/ISceneStack.h"
 #include "mc/client/gui/screens/models/MinecraftScreenModel.h"
 #include "mc/client/options/IOptionRegistry.h"
+#include "mc/locale/I18n.h"
 
 
 namespace my_mod {
@@ -41,6 +44,11 @@ bool MyMod::load() {
 
 bool MyMod::enable() {
     if (mEnabled) return true;
+    // Minecraft displays the action's translation key in keyboard settings.
+    // Preserve the action ID so existing user bindings remain intact.
+    getI18n().appendAdditionalTranslations(
+        {{"key.vibrant-toggle.toggle_vibrant_visuals_y", "Vibrant Toggle"}}, ""
+    );
     auto& key = ll::input::KeyRegistry::getInstance().getOrCreateKey(
         "toggle_vibrant_visuals_y", {'Y'}, true, ll::mod::NativeMod::current()
     );

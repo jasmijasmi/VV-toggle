@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-only
+
 // This file will make your mod use LeviLamina's memory operators by default.
 // This improves the memory management of your mod and is recommended to use.
 
