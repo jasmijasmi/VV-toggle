@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.2.0] - 2026-10-07
+
+-bug fixed
+
 ## [1.0.0] - 2026-10-06
 
 - Register the Y binding during load, use a new action ID to avoid the old O mapping, and log received key callbacks.

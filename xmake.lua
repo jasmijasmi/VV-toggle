@@ -23,9 +23,9 @@ if not has_config("vs_runtime") then
 end
 
 target("vibrant-toggle")
-    set_version("1.0.0")
+    set_version("1.2.0")
     add_rules("@levibuildscript/linkrule")
-    add_rules("@levibuildscript/modpacker", {modVersion = "1.0.0"})
+    add_rules("@levibuildscript/modpacker", {modVersion = "1.2.0"})
     if is_plat("windows") then
         add_defines("NOMINMAX", "UNICODE")
         set_exceptions("none") -- To avoid conflicts with /EHa.
